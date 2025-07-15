@@ -328,8 +328,7 @@ export default function Page() {
 				  <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
 					Vui lòng chọn mã nhân viên
 				  </div>
-				)}
-			  </div>
+			)}
           </div>
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Tên nhân viên</label>
