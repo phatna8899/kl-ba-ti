@@ -43,6 +43,7 @@ export default function Page() {
     diadiem: "",
     vaitro: "",
   });
+  const [offType, setOffType] = useState<"" | "OFF" | "AL">("");
   const [isOvernight, setIsOvernight] = useState(false);
 
   const [data, setData] = useState<CaLam[]>([]);
@@ -171,19 +172,21 @@ const handleChange = (field: string, value: any) => {
   }
 
   const validate = () => {
-    let errs: { [key: string]: boolean } = {};
-    const emp = employees.find(e => e.MaNhanVien === form.ma);
-    if (!form.ma || !emp) errs["ma"] = true;
-    if (!form.ten) errs["ten"] = true;
-    ["ngay", "batdau", "ketthuc"].forEach(field => {
-      if (!form[field as keyof typeof form]) errs[field] = true;
-    });
-    if (!form.diadiem) errs["diadiem"] = true; // validate địa điểm phải chọn
-    if (form.nghi < 0) errs["nghi"] = true;
-    // Nếu bỏ check ca qua đêm mà giờ kết thúc < giờ bắt đầu thì báo lỗi
-    if (!isOvernight && form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau)) errs["ketthuc"] = true;
-    return errs;
-  };
+	  let errs: { [key: string]: boolean } = {};
+	  const emp = employees.find(e => e.MaNhanVien === form.ma);
+	  if (!form.ma || !emp) errs["ma"] = true;
+	  if (!form.ten) errs["ten"] = true;
+	  if (!form.ngay) errs["ngay"] = true;
+	  if (offType === "") {
+		["batdau", "ketthuc"].forEach(field => {
+		  if (!form[field as keyof typeof form]) errs[field] = true;
+		});
+	  }
+	  if (!form.diadiem) errs["diadiem"] = true;
+	  if (form.nghi < 0) errs["nghi"] = true;
+	  if (!isOvernight && offType === "" && form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau)) errs["ketthuc"] = true;
+	  return errs;
+	};
 
   // Giữ lại mã, tên, ngày làm, địa điểm sau khi nhập ca
   const handleAdd = () => {
@@ -202,19 +205,19 @@ const handleChange = (field: string, value: any) => {
     const congchuan = tinhCongChuan(form.batdau!, form.ketthuc!, form.nghi, isOvernight);
 
     setData(prev => [
-      ...prev,
-      {
-        key: Date.now(),
-        ma: form.ma.trim(),
-        ten: form.ten.trim(),
-        thoigianbd: form.ngay!.format("DD/MM/YYYY") + " " + form.batdau!.format("HH:mm"),
-        thoigiankt: thoigianktDate!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm"),
-        nghi: form.nghi,
-        diadiem: form.diadiem,
-        vaitro: form.vaitro || "",
-        congchuan,
-      }
-    ]);
+	  ...prev,
+	  {
+		key: Date.now(),
+		ma: form.ma.trim(),
+		ten: form.ten.trim(),
+		thoigianbd: offType ? offType : (form.ngay!.format("DD/MM/YYYY") + " " + form.batdau!.format("HH:mm")),
+		thoigiankt: offType ? offType : (thoigianktDate!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm")),
+		nghi: form.nghi,
+		diadiem: form.diadiem,
+		vaitro: form.vaitro || "",
+		congchuan: offType ? 0 : congchuan,
+	  }
+	]);
     setForm(f => ({
       ...f,
       batdau: null,
@@ -222,6 +225,7 @@ const handleChange = (field: string, value: any) => {
       giolam: "",
       nghi: 0,
       vaitro: "",
+	  setOffType(""),
       // KHÔNG reset ma, ten, ngay, diadiem để giữ lại!
     }));
     setErrors({});
@@ -324,13 +328,43 @@ const handleChange = (field: string, value: any) => {
               inputReadOnly={false}
             />
           </div>
+		  <div style={{ gridColumn: "1 / span 2", marginBottom: 10, marginLeft: 124 }}>
+			  <Checkbox
+				checked={offType === "OFF"}
+				onChange={e => setOffType(e.target.checked ? "OFF" : (offType === "OFF" ? "" : offType))}
+				style={{ marginRight: 20 }}
+				disabled={offType === "AL"}
+			  >
+				OFF
+			  </Checkbox>
+			  <Checkbox
+				checked={offType === "AL"}
+				onChange={e => setOffType(e.target.checked ? "AL" : (offType === "AL" ? "" : offType))}
+				disabled={offType === "OFF"}
+			  >
+				AL
+			  </Checkbox>
+			</div>
+
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Thời gian bắt đầu *</label>
-            <TimePicker value={form.batdau} onChange={t => handleChange("batdau", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.batdau ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} />
+            <TimePicker
+			  value={form.batdau}
+			  onChange={t => handleChange("batdau", t)}
+			  format="HH:mm"
+			  style={{ ...inputStyle, ...(errors.batdau ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
+			  disabled={offType !== ""}
+			/>
           </div>
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Thời gian kết thúc *</label>
-            <TimePicker value={form.ketthuc} onChange={t => handleChange("ketthuc", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} />
+            <TimePicker
+			  value={form.ketthuc}
+			  onChange={t => handleChange("ketthuc", t)}
+			  format="HH:mm"
+			  style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
+			  disabled={offType !== ""}
+			/>
           </div>
           {form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau) && (
             <div style={{ marginLeft: 124, marginBottom: 10 }}>
