@@ -213,19 +213,23 @@ export default function Page() {
     const congchuan = (offType !== "") ? 0 : tinhCongChuan(form.batdau!, form.ketthuc!, form.nghi, isOvernight);
 
     setData(prev => [
-      ...prev,
-      {
-        key: Date.now(),
-        ma: form.ma.trim(),
-        ten: form.ten.trim(),
-        thoigianbd: offType ? offType : (form.ngay!.format("DD/MM/YYYY") + " " + form.batdau!.format("HH:mm")),
-        thoigiankt: offType ? offType : (thoigianktDate!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm")),
-        nghi: offType ? 0 : form.nghi,
-        diadiem: offType ? "" : form.diadiem,
-        vaitro: offType ? "" : (form.vaitro || ""),
-        congchuan,
-      }
-    ]);
+	  ...prev,
+	  {
+		key: Date.now(),
+		ma: form.ma.trim(),
+		ten: form.ten.trim(),
+		thoigianbd: offType !== ""
+		  ? `${form.ngay?.format("DD/MM/YYYY")} - ${offType}`
+		  : form.ngay!.format("DD/MM/YYYY") + " " + form.batdau!.format("HH:mm"),
+		thoigiankt: offType !== ""
+		  ? `${form.ngay?.format("DD/MM/YYYY")} - ${offType}`
+		  : thoigianktDate!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm"),
+		nghi: offType !== "" ? 0 : form.nghi,
+		diadiem: offType !== "" ? "" : form.diadiem,
+		vaitro: offType !== "" ? "" : form.vaitro || "",
+		congchuan: offType !== "" ? 0 : congchuan,
+	  }
+	]);
     setForm(f => ({
       ...f,
       batdau: null,
