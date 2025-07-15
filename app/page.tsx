@@ -343,12 +343,12 @@ const handleChange = (field: string, value: any) => {
                   }
                 }}
               >
-                Đây có phải là ca qua đêm?
+                Đây là ca qua đêm?
               </Checkbox>
             </div>
           )}
           <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Thời gian làm việc của ca (giờ)</label>
+            <label style={labelColStyle}>Thời lượng (giờ)</label>
             <InputNumber value={form.giolam} min={0} step={0.25} style={inputStyle} onChange={v => handleChange("giolam", v)} />
           </div>
           <div style={fieldRowStyle}>
