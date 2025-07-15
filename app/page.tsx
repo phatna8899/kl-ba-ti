@@ -51,7 +51,7 @@ export default function Page() {
     fetch("/id.csv")
       .then(r => r.text())
       .then(text => {
-        const res = Papa.parse<Employee>(text, { header: true, skipEmptyLines: true });
+        const res = Papa.parse(text, { header: true, skipEmptyLines: true }) as Papa.ParseResult<Employee>;
         setEmployees(res.data.filter(e => e.MaNhanVien && e.TenNhanVien));
       });
     // Đọc danh sách địa điểm
