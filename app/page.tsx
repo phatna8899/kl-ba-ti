@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Input, DatePicker, TimePicker, InputNumber, Button, Table, AutoComplete, Select, message } from "antd";
+import { Input, DatePicker, TimePicker, InputNumber, Button, Table, AutoComplete, Select, Checkbox, message } from "antd";
 import type { Dayjs } from "dayjs";
 import * as XLSX from "xlsx";
 import Papa from "papaparse";
@@ -43,6 +43,8 @@ export default function Page() {
     diadiem: "",
     vaitro: "",
   });
+  const [isOvernight, setIsOvernight] = useState(false);
+
   const [data, setData] = useState<CaLam[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
@@ -108,19 +110,29 @@ export default function Page() {
       ten: false,
     }));
   };
+
+  // Xử lý logic ca qua đêm
   const handleChange = (field: string, value: any) => {
     let nextForm = { ...form, [field]: value };
-    if ((field === "batdau" && form.ketthuc) || (field === "ketthuc" && form.batdau)) {
+    // Reset công nhận ca qua đêm khi đổi giờ
+    if (field === "batdau" || field === "ketthuc") {
       if (nextForm.batdau && nextForm.ketthuc) {
-        const diff = dayjs(nextForm.ketthuc).diff(dayjs(nextForm.batdau), "minute") / 60;
-        nextForm.giolam = diff > 0 ? Number(diff.toFixed(2)) : "";
+        if (nextForm.ketthuc.isBefore(nextForm.batdau)) {
+          setIsOvernight(true);
+        } else {
+          setIsOvernight(false);
+        }
       }
     }
+    // Nếu chọn lại giờ làm, cập nhật giờ kết thúc nếu có giolam
     if ((field === "batdau" && form.giolam) || (field === "giolam" && form.batdau)) {
       if (nextForm.batdau && nextForm.giolam) {
         const bd = dayjs(nextForm.batdau);
         const kt = bd.add(Number(nextForm.giolam) * 60, "minute");
         nextForm.ketthuc = kt;
+        // Xét lại ca qua đêm nếu cần
+        if (kt.isBefore(bd)) setIsOvernight(true);
+        else setIsOvernight(false);
       }
     }
     if (field === "giolam" && !value) {
@@ -130,8 +142,18 @@ export default function Page() {
     setErrors({});
   };
 
-  function tinhCongChuan(bd: Dayjs, kt: Dayjs, nghi: number) {
-    const minutes = kt.diff(bd, "minute") - (nghi || 0);
+  // Tính công chuẩn (xử lý ca qua đêm)
+  function tinhCongChuan(bd: Dayjs, kt: Dayjs, nghi: number, overnight: boolean) {
+    let minutes = 0;
+    if (overnight) {
+      // số phút từ bd đến 24:00
+      minutes += (24 * 60 - bd.hour() * 60 - bd.minute());
+      // số phút từ 00:00 tới kt
+      minutes += kt.hour() * 60 + kt.minute();
+    } else {
+      minutes = kt.diff(bd, "minute");
+    }
+    minutes -= nghi || 0;
     return minutes > 0 ? Number((minutes / 60).toFixed(2)) : 0;
   }
 
@@ -145,10 +167,12 @@ export default function Page() {
     });
     if (!form.diadiem) errs["diadiem"] = true; // validate địa điểm phải chọn
     if (form.nghi < 0) errs["nghi"] = true;
+    // Nếu bỏ check ca qua đêm mà giờ kết thúc < giờ bắt đầu thì báo lỗi
+    if (!isOvernight && form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau)) errs["ketthuc"] = true;
     return errs;
   };
 
-  // Giữ lại mã, tên, ngày làm sau khi nhập ca
+  // Giữ lại mã, tên, ngày làm, địa điểm sau khi nhập ca
   const handleAdd = () => {
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -156,7 +180,14 @@ export default function Page() {
       message.error("Vui lòng nhập đúng và đủ thông tin!");
       return;
     }
-    const congchuan = tinhCongChuan(form.batdau!, form.ketthuc!, form.nghi);
+
+    // Ngày kết thúc tính theo ca qua đêm
+    let thoigianktDate = form.ngay;
+    if (isOvernight) {
+      thoigianktDate = form.ngay!.add(1, "day");
+    }
+    const congchuan = tinhCongChuan(form.batdau!, form.ketthuc!, form.nghi, isOvernight);
+
     setData(prev => [
       ...prev,
       {
@@ -164,22 +195,24 @@ export default function Page() {
         ma: form.ma.trim(),
         ten: form.ten.trim(),
         thoigianbd: form.ngay!.format("DD/MM/YYYY") + " " + form.batdau!.format("HH:mm"),
-        thoigiankt: form.ngay!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm"),
+        thoigiankt: thoigianktDate!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm"),
         nghi: form.nghi,
         diadiem: form.diadiem,
         vaitro: form.vaitro || "",
         congchuan,
       }
     ]);
-    setForm({
-      ...form,
+    setForm(f => ({
+      ...f,
       batdau: null,
       ketthuc: null,
       giolam: "",
       nghi: 0,
       vaitro: "",
-    });
+      // KHÔNG reset ma, ten, ngay, diadiem để giữ lại!
+    }));
     setErrors({});
+    setIsOvernight(false);
   };
 
   const removeRow = (key: number) => setData(prev => prev.filter(row => row.key !== key));
@@ -230,13 +263,14 @@ export default function Page() {
       title: "Xóa",
       key: "action",
       width: 70,
+      fixed: "right",
       render: (_: any, record: CaLam) => (
         <Button danger size="small" onClick={() => removeRow(record.key)}>Xóa</Button>
       ),
     },
   ];
 
-  // Style form: nhỏ, đẹp, không phụ thuộc bảng
+  // Style form
   const fieldRowStyle: React.CSSProperties = { display: "grid", gridTemplateColumns: "124px 1fr", alignItems: "center", marginBottom: 15, columnGap: 34 };
   const labelColStyle: React.CSSProperties = { fontWeight: 500, fontSize: 13, whiteSpace: "nowrap", marginBottom: 0 };
   const inputStyle: React.CSSProperties = { width: "100%", minHeight: 32, fontSize: 15, borderRadius: 6 };
@@ -259,7 +293,7 @@ export default function Page() {
               value={form.ma}
               onChange={handleMaChange}
               onSelect={handleMaSelect}
-              placeholder="Nhập mã nhân viên"
+              placeholder="Chọn/gõ mã nhân viên"
               filterOption={false}
             />
           </div>
@@ -286,8 +320,23 @@ export default function Page() {
             <label style={labelColStyle}>Thời gian kết thúc *</label>
             <TimePicker value={form.ketthuc} onChange={t => handleChange("ketthuc", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} />
           </div>
+          {form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau) && (
+            <div style={{ marginLeft: 124, marginBottom: 10 }}>
+              <Checkbox
+                checked={isOvernight}
+                onChange={e => {
+                  setIsOvernight(e.target.checked);
+                  if (!e.target.checked) {
+                    setForm(f => ({ ...f, ketthuc: null }));
+                  }
+                }}
+              >
+                Đây có phải là ca qua đêm?
+              </Checkbox>
+            </div>
+          )}
           <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Số giờ làm:</label>
+            <label style={labelColStyle}>Thời gian làm việc của ca (giờ)</label>
             <InputNumber value={form.giolam} min={0} step={0.25} style={inputStyle} onChange={v => handleChange("giolam", v)} />
           </div>
           <div style={fieldRowStyle}>
