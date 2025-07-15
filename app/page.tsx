@@ -290,7 +290,7 @@ const handleChange = (field: string, value: any) => {
   return (
     <div>
       {/* FORM nhỏ phía trên */}
-      <div style={{ maxWidth: 520, margin: "24px auto 0 auto", padding: 18, background: "#fafafa", borderRadius: 8, boxShadow: "0 0 8px #e4e4e4" }}>
+      <div className="kl-form-light" style={{ maxWidth: 520, margin: "24px auto 0 auto", padding: 18, borderRadius: 8, boxShadow: "0 0 8px #e4e4e4" }}>
         <h2 style={{ marginBottom: 17, fontSize: 18, textAlign: "center" }}>Nhập thông tin ca làm</h2>
         <form autoComplete="off">
           <div style={fieldRowStyle}>

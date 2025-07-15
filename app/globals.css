@@ -24,3 +24,48 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* globals.css - ép màu sáng cho form nhập ca */
+.kl-modal-light,
+.kl-form-light {
+  background: #fff !important;
+  color: #212121 !important;
+}
+
+.kl-form-light input,
+.kl-form-light .ant-select-selector,
+.kl-form-light .ant-picker,
+.kl-form-light textarea {
+  background: #fff !important;
+  color: #222 !important;
+  border-color: #d9d9d9 !important;
+}
+
+.kl-form-light label {
+  color: #111 !important;
+  font-weight: 500;
+}
+
+.kl-modal-light .ant-modal-content {
+  background: #fff !important;
+}
+
+.kl-form-light .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.kl-form-light {
+  background: #fff !important;
+  color: #222 !important;
+  box-shadow: 0 0 8px #e4e4e4;
+}
+
+.kl-form-light input,
+.kl-form-light .ant-input,
+.kl-form-light .ant-picker,
+.kl-form-light .ant-select-selector,
+.kl-form-light .ant-input-number,
+.kl-form-light .ant-input-affix-wrapper {
+  background: #fff !important;
+  color: #222 !important;
+}
