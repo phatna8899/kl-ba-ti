@@ -495,7 +495,10 @@ export default function Page() {
         }}
       >
         <h2 style={{ fontSize: 19, marginBottom: 12 }}>Danh sách ca đã nhập</h2>
-        <Table
+        <Button type="primary" style={{ marginTop: 18 }} onClick={exportExcel}>
+          Xuất file template
+        </Button>
+		<Table
           columns={columns}
           dataSource={data}
           pagination={false}
@@ -503,9 +506,6 @@ export default function Page() {
           scroll={{ x: 1300 }}
           style={{ minWidth: 1200 }}
         />
-        <Button type="primary" style={{ marginTop: 18 }} onClick={exportExcel}>
-          Export to Excel
-        </Button>
       </div>
     </div>
   );
