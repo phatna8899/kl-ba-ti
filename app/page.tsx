@@ -303,129 +303,182 @@ export default function Page() {
   const labelColStyle: React.CSSProperties = { fontWeight: 500, fontSize: 13, whiteSpace: "nowrap", marginBottom: 0 };
   const inputStyle: React.CSSProperties = { width: "100%", minHeight: 32, fontSize: 15, borderRadius: 6 };
 
-  return (
-    <div>
-      {/* FORM nhỏ phía trên */}
-      <div className="kl-form-light" style={{ maxWidth: 520, margin: "24px auto 0 auto", padding: 18, borderRadius: 8, boxShadow: "0 0 8px #e4e4e4" }}>
-        <h2 style={{ marginBottom: 17, fontSize: 18, textAlign: "center" }}>Nhập thông tin ca làm</h2>
-        <form autoComplete="off">
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Mã nhân viên *</label>
-            <AutoComplete
-              style={{
-                ...inputStyle,
-                borderColor: errors.ma ? "#ff4d4f" : undefined,
-                background: errors.ma ? "#fff1f0" : undefined
-              }}
-              options={getMaOptions(maInput)}
-              value={form.ma}
-              onChange={handleMaChange}
-              onSelect={handleMaSelect}
-              placeholder="Chọn/gõ mã nhân viên"
-              filterOption={false}
-            />
-			{errors.ma && (
+	return (
+	  <div>
+		{/* FORM nhỏ phía trên */}
+		<div className="kl-form-light" style={{ maxWidth: 520, margin: "24px auto 0 auto", padding: 18, borderRadius: 8, boxShadow: "0 0 8px #e4e4e4" }}>
+		  <h2 style={{ marginBottom: 17, fontSize: 18, textAlign: "center" }}>Nhập thông tin ca làm</h2>
+		  <form autoComplete="off">
+			{/* Mã nhân viên */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Mã nhân viên *</label>
+			  <div style={{ width: "100%" }}>
+				<AutoComplete
+				  style={{
+					...inputStyle,
+					borderColor: errors.ma ? "#ff4d4f" : undefined,
+					background: errors.ma ? "#fff1f0" : undefined
+				  }}
+				  options={getMaOptions(maInput)}
+				  value={form.ma}
+				  onChange={handleMaChange}
+				  onSelect={handleMaSelect}
+				  placeholder="Chọn/gõ mã nhân viên"
+				  filterOption={false}
+				/>
+				{errors.ma && (
 				  <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
 					Vui lòng chọn mã nhân viên
 				  </div>
+				)}
+			  </div>
+			</div>
+			{/* Tên nhân viên */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Tên nhân viên</label>
+			  <Input value={form.ten} disabled style={{ ...inputStyle, background: "#f5f5f5" }} />
+			</div>
+			{/* Ngày làm */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Ngày làm *</label>
+			  <div style={{ width: "100%" }}>
+				<DatePicker
+				  value={form.ngay}
+				  onChange={d => handleChange("ngay", d)}
+				  format="DD-MM-YYYY"
+				  style={{ ...inputStyle, ...(errors.ngay ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
+				  allowClear
+				  inputReadOnly={false}
+				/>
+				{errors.ngay && (
+				  <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
+					Vui lòng chọn ngày làm việc
+				  </div>
+				)}
+			  </div>
+			</div>
+			{/* OFF/AL checkboxes */}
+			<div style={{ gridColumn: "1 / span 2", marginBottom: 10, marginLeft: 124 }}>
+			  <Checkbox
+				checked={offType === "OFF"}
+				onChange={e => setOffType(e.target.checked ? "OFF" : (offType === "OFF" ? "" : offType))}
+				style={{ marginRight: 20 }}
+				disabled={offType === "AL"}
+			  >
+				OFF
+			  </Checkbox>
+			  <Checkbox
+				checked={offType === "AL"}
+				onChange={e => setOffType(e.target.checked ? "AL" : (offType === "AL" ? "" : offType))}
+				disabled={offType === "OFF"}
+			  >
+				AL
+			  </Checkbox>
+			</div>
+			{/* Thời gian bắt đầu */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Thời gian bắt đầu *</label>
+			  <div style={{ width: "100%" }}>
+				<TimePicker
+				  value={form.batdau}
+				  onChange={t => handleChange("batdau", t)}
+				  format="HH:mm"
+				  style={{ ...inputStyle, ...(errors.batdau ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
+				  disabled={offType !== ""}
+				/>
+				{errors.batdau && offType === "" && (
+				  <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
+					Vui lòng nhập thời gian bắt đầu
+				  </div>
+				)}
+			  </div>
+			</div>
+			{/* Thời gian kết thúc */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Thời gian kết thúc *</label>
+			  <div style={{ width: "100%" }}>
+				<TimePicker
+				  value={form.ketthuc}
+				  onChange={t => handleChange("ketthuc", t)}
+				  format="HH:mm"
+				  style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
+				  disabled={offType !== ""}
+				/>
+				{errors.ketthuc && offType === "" && (
+				  <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
+					Vui lòng nhập thời gian kết thúc
+				  </div>
+				)}
+			  </div>
+			</div>
+			{form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau) && offType === "" && (
+			  <div style={{ marginLeft: 124, marginBottom: 10 }}>
+				<Checkbox
+				  checked={isOvernight}
+				  onChange={e => {
+					setIsOvernight(e.target.checked);
+					if (!e.target.checked) {
+					  setForm(f => ({ ...f, ketthuc: null }));
+					}
+				  }}
+				>
+				  Đây là ca qua đêm?
+				</Checkbox>
+			  </div>
 			)}
-          </div>
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Tên nhân viên</label>
-            <Input value={form.ten} disabled style={{ ...inputStyle, background: "#f5f5f5" }} />
-          </div>
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Ngày làm *</label>
-            <DatePicker
-              value={form.ngay}
-              onChange={d => handleChange("ngay", d)}
-              format="DD-MM-YYYY"
-              style={{ ...inputStyle, ...(errors.ngay ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
-              allowClear
-              inputReadOnly={false}
-            />
-          </div>
-          {/* OFF/AL checkboxes */}
-          <div style={{ gridColumn: "1 / span 2", marginBottom: 10, marginLeft: 124 }}>
-            <Checkbox
-              checked={offType === "OFF"}
-              onChange={e => setOffType(e.target.checked ? "OFF" : (offType === "OFF" ? "" : offType))}
-              style={{ marginRight: 20 }}
-              disabled={offType === "AL"}
-            >
-              OFF
-            </Checkbox>
-            <Checkbox
-              checked={offType === "AL"}
-              onChange={e => setOffType(e.target.checked ? "AL" : (offType === "AL" ? "" : offType))}
-              disabled={offType === "OFF"}
-            >
-              AL
-            </Checkbox>
-          </div>
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Thời gian bắt đầu *</label>
-            <TimePicker value={form.batdau} onChange={t => handleChange("batdau", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.batdau ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} disabled={offType !== ""} />
-          </div>
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Thời gian kết thúc *</label>
-            <TimePicker value={form.ketthuc} onChange={t => handleChange("ketthuc", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} disabled={offType !== ""} />
-          </div>
-          {form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau) && offType === "" && (
-            <div style={{ marginLeft: 124, marginBottom: 10 }}>
-              <Checkbox
-                checked={isOvernight}
-                onChange={e => {
-                  setIsOvernight(e.target.checked);
-                  if (!e.target.checked) {
-                    setForm(f => ({ ...f, ketthuc: null }));
-                  }
-                }}
-              >
-                Đây là ca qua đêm?
-              </Checkbox>
-            </div>
-          )}
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Thời lượng (giờ)</label>
-            <InputNumber value={form.giolam} min={0} step={0.25} style={inputStyle} onChange={v => handleChange("giolam", v)} disabled={offType !== ""} />
-          </div>
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Thời gian nghỉ (phút) *</label>
-            <InputNumber value={offType !== "" ? 0 : form.nghi} min={0} style={{ ...inputStyle, ...(errors.nghi ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} onChange={v => handleChange("nghi", v ?? 0)} disabled={offType !== ""} />
-          </div>
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Địa điểm *</label>
-            <div style={{ width: "100%" }}>
-              <Select
-                style={{
-                  ...inputStyle,
-                  borderColor: errors.diadiem ? "#ff4d4f" : undefined,
-                  background: errors.diadiem ? "#fff1f0" : undefined,
-                }}
-                value={offType !== "" ? undefined : (form.diadiem || undefined)}
-                onChange={value => handleChange("diadiem", value)}
-                placeholder="Chọn địa điểm"
-                allowClear
-                options={locations.map(l => ({ value: l, label: l }))}
-                disabled={offType !== ""}
-              />
-              {errors.diadiem && offType === "" && (
-                <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
-                  Vui lòng chọn địa điểm làm việc
-                </div>
-              )}
-            </div>
-          </div>
-          <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Vai trò</label>
-            <Input value={offType !== "" ? "" : form.vaitro} onChange={e => handleChange("vaitro", e.target.value)} style={inputStyle} disabled={offType !== ""} />
-          </div>
-          <div style={{ textAlign: "right", marginTop: 16 }}>
-            <Button type="primary" onClick={handleAdd}>Input</Button>
-          </div>
-        </form>
-      </div>
+			{/* Thời lượng (giờ) */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Thời lượng (giờ)</label>
+			  <div style={{ width: "100%" }}>
+				<InputNumber value={form.giolam} min={0} step={0.25} style={inputStyle} onChange={v => handleChange("giolam", v)} disabled={offType !== ""} />
+			  </div>
+			</div>
+			{/* Thời gian nghỉ (phút) */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Thời gian nghỉ (phút) *</label>
+			  <div style={{ width: "100%" }}>
+				<InputNumber value={offType !== "" ? 0 : form.nghi} min={0} style={{ ...inputStyle, ...(errors.nghi ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} onChange={v => handleChange("nghi", v ?? 0)} disabled={offType !== ""} />
+				{errors.nghi && offType === "" && (
+				  <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
+					Vui lòng nhập thời gian nghỉ hợp lệ
+				  </div>
+				)}
+			  </div>
+			</div>
+			{/* Địa điểm */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Địa điểm *</label>
+			  <div style={{ width: "100%" }}>
+				<Select
+				  style={{
+					...inputStyle,
+					borderColor: errors.diadiem ? "#ff4d4f" : undefined,
+					background: errors.diadiem ? "#fff1f0" : undefined,
+				  }}
+				  value={offType !== "" ? undefined : (form.diadiem || undefined)}
+				  onChange={value => handleChange("diadiem", value)}
+				  placeholder="Chọn địa điểm"
+				  allowClear
+				  options={locations.map(l => ({ value: l, label: l }))}
+				  disabled={offType !== ""}
+				/>
+				{errors.diadiem && offType === "" && (
+				  <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
+					Vui lòng chọn địa điểm làm việc
+				  </div>
+				)}
+			  </div>
+			</div>
+			{/* Vai trò */}
+			<div style={fieldRowStyle}>
+			  <label style={labelColStyle}>Vai trò</label>
+			  <Input value={offType !== "" ? "" : form.vaitro} onChange={e => handleChange("vaitro", e.target.value)} style={inputStyle} disabled={offType !== ""} />
+			</div>
+			<div style={{ textAlign: "right", marginTop: 16 }}>
+			  <Button type="primary" onClick={handleAdd}>Input</Button>
+			</div>
+		  </form>
+		</div>
 
       {/* Bảng review: tách hoàn toàn, luôn đủ rộng */}
       <div
