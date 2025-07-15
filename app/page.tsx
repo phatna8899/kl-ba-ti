@@ -225,7 +225,7 @@ const handleChange = (field: string, value: any) => {
       giolam: "",
       nghi: 0,
       vaitro: "",
-	  setOffType(""),
+	  OffType:"",
       // KHÔNG reset ma, ten, ngay, diadiem để giữ lại!
     }));
     setErrors({});
