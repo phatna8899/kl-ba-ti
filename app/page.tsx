@@ -52,14 +52,14 @@ export default function Page() {
       .then(r => r.text())
       .then(text => {
         const res = Papa.parse(text, { header: true, skipEmptyLines: true }) as any;
-        setEmployees(res.data.filter(e => e.MaNhanVien && e.TenNhanVien));
+        setEmployees(res.data.filter((e: Employee) => e.MaNhanVien && e.TenNhanVien));
       });
     // Đọc danh sách địa điểm
     fetch("/locations.csv")
       .then(r => r.text())
       .then(text => {
         const res = Papa.parse(text, { header: true, skipEmptyLines: true }) as any;
-        setLocations(res.data.map(e => e.Location).filter(Boolean));
+        setLocations(res.data.map((e: { Location: string }) => e.Location).filter(Boolean));
       });
   }, []);
 
