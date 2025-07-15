@@ -32,6 +32,9 @@ export default function Page() {
   const [locations, setLocations] = useState<string[]>([]);
   const [maInput, setMaInput] = useState(""); // auto-complete input
 
+  // Thêm state nghỉ OFF/AL
+  const [offType, setOffType] = useState<"" | "OFF" | "AL">("");
+
   const [form, setForm] = useState({
     ma: "",
     ten: "",
@@ -43,7 +46,6 @@ export default function Page() {
     diadiem: "",
     vaitro: "",
   });
-  const [offType, setOffType] = useState<"" | "OFF" | "AL">("");
   const [isOvernight, setIsOvernight] = useState(false);
 
   const [data, setData] = useState<CaLam[]>([]);
@@ -113,56 +115,61 @@ export default function Page() {
   };
 
   // Xử lý logic ca qua đêm
-const handleChange = (field: string, value: any) => {
-  let nextForm = { ...form, [field]: value };
+  const handleChange = (field: string, value: any) => {
+    let nextForm = { ...form, [field]: value };
 
-  // Kiểm tra ca qua đêm thực tế tại thời điểm nhập
-  let tempIsOvernight = false;
-  if ((field === "batdau" || field === "ketthuc") && nextForm.batdau && nextForm.ketthuc) {
-    if (nextForm.ketthuc.isBefore(nextForm.batdau)) {
-      tempIsOvernight = true;
-      setIsOvernight(true);
-    } else {
-      setIsOvernight(false);
+    // Nếu có chọn OFF/AL, clear giờ, địa điểm, vai trò khi thao tác các trường này
+    if (offType !== "") {
+      nextForm.batdau = null;
+      nextForm.ketthuc = null;
+      nextForm.giolam = "";
+      nextForm.diadiem = "";
+      nextForm.vaitro = "";
     }
-    // TÍNH GIỜ LÀM (không phụ thuộc state)
-    let duration = 0;
-    if (tempIsOvernight) {
-      // Ca qua đêm
-      const bd = nextForm.batdau;
-      const kt = nextForm.ketthuc;
-      duration = (24 * 60 - bd.hour() * 60 - bd.minute()) + (kt.hour() * 60 + kt.minute());
-    } else {
-      // Ca thường
-      duration = nextForm.ketthuc.diff(nextForm.batdau, "minute");
-    }
-    nextForm.giolam = duration > 0 ? Number((duration / 60).toFixed(2)) : "";
-  }
 
-  // Nếu chọn lại giờ làm, cập nhật giờ kết thúc nếu có giolam
-  if ((field === "batdau" && form.giolam) || (field === "giolam" && form.batdau)) {
-    if (nextForm.batdau && nextForm.giolam) {
-      const bd = dayjs(nextForm.batdau);
-      const kt = bd.add(Number(nextForm.giolam) * 60, "minute");
-      nextForm.ketthuc = kt;
-      if (kt.isBefore(bd)) setIsOvernight(true);
-      else setIsOvernight(false);
+    // Kiểm tra ca qua đêm thực tế tại thời điểm nhập
+    let tempIsOvernight = false;
+    if (offType === "" && (field === "batdau" || field === "ketthuc") && nextForm.batdau && nextForm.ketthuc) {
+      if (nextForm.ketthuc.isBefore(nextForm.batdau)) {
+        tempIsOvernight = true;
+        setIsOvernight(true);
+      } else {
+        setIsOvernight(false);
+      }
+      // TÍNH GIỜ LÀM (không phụ thuộc state)
+      let duration = 0;
+      if (tempIsOvernight) {
+        const bd = nextForm.batdau;
+        const kt = nextForm.ketthuc;
+        duration = (24 * 60 - bd.hour() * 60 - bd.minute()) + (kt.hour() * 60 + kt.minute());
+      } else {
+        duration = nextForm.ketthuc.diff(nextForm.batdau, "minute");
+      }
+      nextForm.giolam = duration > 0 ? Number((duration / 60).toFixed(2)) : "";
     }
-  }
-  if (field === "giolam" && !value) {
-    nextForm.ketthuc = null;
-  }
-  setForm(nextForm);
-  setErrors({});
-};
+
+    // Nếu chọn lại giờ làm, cập nhật giờ kết thúc nếu có giolam
+    if (offType === "" && ((field === "batdau" && form.giolam) || (field === "giolam" && form.batdau))) {
+      if (nextForm.batdau && nextForm.giolam) {
+        const bd = dayjs(nextForm.batdau);
+        const kt = bd.add(Number(nextForm.giolam) * 60, "minute");
+        nextForm.ketthuc = kt;
+        if (kt.isBefore(bd)) setIsOvernight(true);
+        else setIsOvernight(false);
+      }
+    }
+    if (field === "giolam" && !value) {
+      nextForm.ketthuc = null;
+    }
+    setForm(nextForm);
+    setErrors({});
+  };
 
   // Tính công chuẩn (xử lý ca qua đêm)
   function tinhCongChuan(bd: Dayjs, kt: Dayjs, nghi: number, overnight: boolean) {
     let minutes = 0;
     if (overnight) {
-      // số phút từ bd đến 24:00
       minutes += (24 * 60 - bd.hour() * 60 - bd.minute());
-      // số phút từ 00:00 tới kt
       minutes += kt.hour() * 60 + kt.minute();
     } else {
       minutes = kt.diff(bd, "minute");
@@ -171,24 +178,25 @@ const handleChange = (field: string, value: any) => {
     return minutes > 0 ? Number((minutes / 60).toFixed(2)) : 0;
   }
 
+  // Validate: nếu offType khác rỗng thì chỉ validate mã, tên, ngày làm
   const validate = () => {
-	  let errs: { [key: string]: boolean } = {};
-	  const emp = employees.find(e => e.MaNhanVien === form.ma);
-	  if (!form.ma || !emp) errs["ma"] = true;
-	  if (!form.ten) errs["ten"] = true;
-	  if (!form.ngay) errs["ngay"] = true;
-	  if (offType === "") {
-		["batdau", "ketthuc"].forEach(field => {
-		  if (!form[field as keyof typeof form]) errs[field] = true;
-		});
-	  }
-	  if (!form.diadiem) errs["diadiem"] = true;
-	  if (form.nghi < 0) errs["nghi"] = true;
-	  if (!isOvernight && offType === "" && form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau)) errs["ketthuc"] = true;
-	  return errs;
-	};
+    let errs: { [key: string]: boolean } = {};
+    const emp = employees.find(e => e.MaNhanVien === form.ma);
+    if (!form.ma || !emp) errs["ma"] = true;
+    if (!form.ten) errs["ten"] = true;
+    if (!form.ngay) errs["ngay"] = true;
+    if (offType === "") {
+      ["batdau", "ketthuc"].forEach(field => {
+        if (!form[field as keyof typeof form]) errs[field] = true;
+      });
+      if (!form.diadiem) errs["diadiem"] = true;
+      if (form.nghi < 0) errs["nghi"] = true;
+      if (!isOvernight && form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau)) errs["ketthuc"] = true;
+    }
+    return errs;
+  };
 
-  // Giữ lại mã, tên, ngày làm, địa điểm sau khi nhập ca
+  // Giữ lại mã, tên, ngày làm, sau khi nhập ca
   const handleAdd = () => {
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -202,22 +210,22 @@ const handleChange = (field: string, value: any) => {
     if (isOvernight) {
       thoigianktDate = form.ngay!.add(1, "day");
     }
-    const congchuan = tinhCongChuan(form.batdau!, form.ketthuc!, form.nghi, isOvernight);
+    const congchuan = (offType !== "") ? 0 : tinhCongChuan(form.batdau!, form.ketthuc!, form.nghi, isOvernight);
 
     setData(prev => [
-	  ...prev,
-	  {
-		key: Date.now(),
-		ma: form.ma.trim(),
-		ten: form.ten.trim(),
-		thoigianbd: offType ? offType : (form.ngay!.format("DD/MM/YYYY") + " " + form.batdau!.format("HH:mm")),
-		thoigiankt: offType ? offType : (thoigianktDate!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm")),
-		nghi: form.nghi,
-		diadiem: form.diadiem,
-		vaitro: form.vaitro || "",
-		congchuan: offType ? 0 : congchuan,
-	  }
-	]);
+      ...prev,
+      {
+        key: Date.now(),
+        ma: form.ma.trim(),
+        ten: form.ten.trim(),
+        thoigianbd: offType ? offType : (form.ngay!.format("DD/MM/YYYY") + " " + form.batdau!.format("HH:mm")),
+        thoigiankt: offType ? offType : (thoigianktDate!.format("DD/MM/YYYY") + " " + form.ketthuc!.format("HH:mm")),
+        nghi: offType ? 0 : form.nghi,
+        diadiem: offType ? "" : form.diadiem,
+        vaitro: offType ? "" : (form.vaitro || ""),
+        congchuan,
+      }
+    ]);
     setForm(f => ({
       ...f,
       batdau: null,
@@ -225,11 +233,11 @@ const handleChange = (field: string, value: any) => {
       giolam: "",
       nghi: 0,
       vaitro: "",
-      // KHÔNG reset ma, ten, ngay, diadiem để giữ lại!
+      diadiem: "",
+      // KHÔNG reset ma, ten, ngay để giữ lại!
     }));
-    setErrors({});
     setIsOvernight(false);
-	setOffType(""); // Reset OFF/AL sau khi input
+    setOffType(""); // Reset OFF/AL sau khi input
   };
 
   const removeRow = (key: number) => setData(prev => prev.filter(row => row.key !== key));
@@ -328,45 +336,33 @@ const handleChange = (field: string, value: any) => {
               inputReadOnly={false}
             />
           </div>
-		  <div style={{ gridColumn: "1 / span 2", marginBottom: 10, marginLeft: 124 }}>
-			  <Checkbox
-				checked={offType === "OFF"}
-				onChange={e => setOffType(e.target.checked ? "OFF" : (offType === "OFF" ? "" : offType))}
-				style={{ marginRight: 20 }}
-				disabled={offType === "AL"}
-			  >
-				OFF
-			  </Checkbox>
-			  <Checkbox
-				checked={offType === "AL"}
-				onChange={e => setOffType(e.target.checked ? "AL" : (offType === "AL" ? "" : offType))}
-				disabled={offType === "OFF"}
-			  >
-				AL
-			  </Checkbox>
-			</div>
-
+          {/* OFF/AL checkboxes */}
+          <div style={{ gridColumn: "1 / span 2", marginBottom: 10, marginLeft: 124 }}>
+            <Checkbox
+              checked={offType === "OFF"}
+              onChange={e => setOffType(e.target.checked ? "OFF" : (offType === "OFF" ? "" : offType))}
+              style={{ marginRight: 20 }}
+              disabled={offType === "AL"}
+            >
+              OFF
+            </Checkbox>
+            <Checkbox
+              checked={offType === "AL"}
+              onChange={e => setOffType(e.target.checked ? "AL" : (offType === "AL" ? "" : offType))}
+              disabled={offType === "OFF"}
+            >
+              AL
+            </Checkbox>
+          </div>
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Thời gian bắt đầu *</label>
-            <TimePicker
-			  value={form.batdau}
-			  onChange={t => handleChange("batdau", t)}
-			  format="HH:mm"
-			  style={{ ...inputStyle, ...(errors.batdau ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
-			  disabled={offType !== ""}
-			/>
+            <TimePicker value={form.batdau} onChange={t => handleChange("batdau", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.batdau ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} disabled={offType !== ""} />
           </div>
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Thời gian kết thúc *</label>
-            <TimePicker
-			  value={form.ketthuc}
-			  onChange={t => handleChange("ketthuc", t)}
-			  format="HH:mm"
-			  style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }}
-			  disabled={offType !== ""}
-			/>
+            <TimePicker value={form.ketthuc} onChange={t => handleChange("ketthuc", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} disabled={offType !== ""} />
           </div>
-          {form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau) && (
+          {form.batdau && form.ketthuc && form.ketthuc.isBefore(form.batdau) && offType === "" && (
             <div style={{ marginLeft: 124, marginBottom: 10 }}>
               <Checkbox
                 checked={isOvernight}
@@ -383,11 +379,11 @@ const handleChange = (field: string, value: any) => {
           )}
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Thời lượng (giờ)</label>
-            <InputNumber value={form.giolam} min={0} step={0.25} style={inputStyle} onChange={v => handleChange("giolam", v)} />
+            <InputNumber value={form.giolam} min={0} step={0.25} style={inputStyle} onChange={v => handleChange("giolam", v)} disabled={offType !== ""} />
           </div>
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Thời gian nghỉ (phút) *</label>
-            <InputNumber value={form.nghi} min={0} style={{ ...inputStyle, ...(errors.nghi ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} onChange={v => handleChange("nghi", v ?? 0)} />
+            <InputNumber value={offType !== "" ? 0 : form.nghi} min={0} style={{ ...inputStyle, ...(errors.nghi ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} onChange={v => handleChange("nghi", v ?? 0)} disabled={offType !== ""} />
           </div>
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Địa điểm *</label>
@@ -398,13 +394,14 @@ const handleChange = (field: string, value: any) => {
                   borderColor: errors.diadiem ? "#ff4d4f" : undefined,
                   background: errors.diadiem ? "#fff1f0" : undefined,
                 }}
-                value={form.diadiem || undefined}
+                value={offType !== "" ? undefined : (form.diadiem || undefined)}
                 onChange={value => handleChange("diadiem", value)}
                 placeholder="Chọn địa điểm"
                 allowClear
                 options={locations.map(l => ({ value: l, label: l }))}
+                disabled={offType !== ""}
               />
-              {errors.diadiem && (
+              {errors.diadiem && offType === "" && (
                 <div style={{ color: "#ff4d4f", fontSize: 13, marginTop: 2 }}>
                   Vui lòng chọn địa điểm làm việc
                 </div>
@@ -413,7 +410,7 @@ const handleChange = (field: string, value: any) => {
           </div>
           <div style={fieldRowStyle}>
             <label style={labelColStyle}>Vai trò</label>
-            <Input value={form.vaitro} onChange={e => handleChange("vaitro", e.target.value)} style={inputStyle} />
+            <Input value={offType !== "" ? "" : form.vaitro} onChange={e => handleChange("vaitro", e.target.value)} style={inputStyle} disabled={offType !== ""} />
           </div>
           <div style={{ textAlign: "right", marginTop: 16 }}>
             <Button type="primary" onClick={handleAdd}>Input</Button>
