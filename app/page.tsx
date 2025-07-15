@@ -177,7 +177,6 @@ export default function Page() {
       ketthuc: null,
       giolam: "",
       nghi: 0,
-      diadiem: "",
       vaitro: "",
     });
     setErrors({});
@@ -288,7 +287,7 @@ export default function Page() {
             <TimePicker value={form.ketthuc} onChange={t => handleChange("ketthuc", t)} format="HH:mm" style={{ ...inputStyle, ...(errors.ketthuc ? { borderColor: "#ff4d4f", background: "#fff1f0" } : {}) }} />
           </div>
           <div style={fieldRowStyle}>
-            <label style={labelColStyle}>Thời gian làm việc của ca (giờ)</label>
+            <label style={labelColStyle}>Số giờ làm:</label>
             <InputNumber value={form.giolam} min={0} step={0.25} style={inputStyle} onChange={v => handleChange("giolam", v)} />
           </div>
           <div style={fieldRowStyle}>
