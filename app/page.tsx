@@ -225,11 +225,11 @@ const handleChange = (field: string, value: any) => {
       giolam: "",
       nghi: 0,
       vaitro: "",
-	  OffType:"",
       // KHÔNG reset ma, ten, ngay, diadiem để giữ lại!
     }));
     setErrors({});
     setIsOvernight(false);
+	setOffType(""); // Reset OFF/AL sau khi input
   };
 
   const removeRow = (key: number) => setData(prev => prev.filter(row => row.key !== key));
