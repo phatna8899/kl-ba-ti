@@ -244,7 +244,7 @@ const handleChange = (field: string, value: any) => {
         "Thời gian nghỉ",
         "Địa điểm",
         "Vai trò",
-        "Công chuẩn"
+        "Số giờ làm"
       ],
       ...data.map(r => [
         r.ma,
@@ -271,7 +271,7 @@ const handleChange = (field: string, value: any) => {
     { title: "Thời gian nghỉ", dataIndex: "nghi", key: "nghi", width: 90 },
     { title: "Địa điểm", dataIndex: "diadiem", key: "diadiem", width: 170 },
     { title: "Vai trò", dataIndex: "vaitro", key: "vaitro", width: 120 },
-    { title: "Công chuẩn", dataIndex: "congchuan", key: "congchuan", width: 100 },
+    { title: "Số giờ làm", dataIndex: "congchuan", key: "congchuan", width: 100 },
     {
       title: "Xóa",
       key: "action",
