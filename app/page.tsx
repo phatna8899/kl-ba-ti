@@ -401,7 +401,7 @@ const handleChange = (field: string, value: any) => {
           padding: "26px 24px 32px 24px",
         }}
       >
-        <h2 style={{ fontSize: 19, marginBottom: 12 }}>Bảng review</h2>
+        <h2 style={{ fontSize: 19, marginBottom: 12 }}>Danh sách ca đã nhập</h2>
         <Table
           columns={columns}
           dataSource={data}
