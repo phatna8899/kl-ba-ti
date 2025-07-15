@@ -58,7 +58,7 @@ export default function Page() {
     fetch("/locations.csv")
       .then(r => r.text())
       .then(text => {
-        const res = Papa.parse<{ Location: string }>(text, { header: true, skipEmptyLines: true });
+        const res = Papa.parse(text, { header: true, skipEmptyLines: true }) as Papa.ParseResult<{ Location: string }>;
         setLocations(res.data.map(e => e.Location).filter(Boolean));
       });
   }, []);
