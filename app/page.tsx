@@ -231,7 +231,6 @@ export default function Page() {
       title: "Xóa",
       key: "action",
       width: 70,
-      fixed: "right",
       render: (_: any, record: CaLam) => (
         <Button danger size="small" onClick={() => removeRow(record.key)}>Xóa</Button>
       ),
