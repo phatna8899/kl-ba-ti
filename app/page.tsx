@@ -112,35 +112,48 @@ export default function Page() {
   };
 
   // Xử lý logic ca qua đêm
-  const handleChange = (field: string, value: any) => {
-    let nextForm = { ...form, [field]: value };
-    // Reset công nhận ca qua đêm khi đổi giờ
-    if (field === "batdau" || field === "ketthuc") {
-      if (nextForm.batdau && nextForm.ketthuc) {
-        if (nextForm.ketthuc.isBefore(nextForm.batdau)) {
-          setIsOvernight(true);
-        } else {
-          setIsOvernight(false);
-        }
-      }
+const handleChange = (field: string, value: any) => {
+  let nextForm = { ...form, [field]: value };
+
+  // Kiểm tra ca qua đêm thực tế tại thời điểm nhập
+  let tempIsOvernight = false;
+  if ((field === "batdau" || field === "ketthuc") && nextForm.batdau && nextForm.ketthuc) {
+    if (nextForm.ketthuc.isBefore(nextForm.batdau)) {
+      tempIsOvernight = true;
+      setIsOvernight(true);
+    } else {
+      setIsOvernight(false);
     }
-    // Nếu chọn lại giờ làm, cập nhật giờ kết thúc nếu có giolam
-    if ((field === "batdau" && form.giolam) || (field === "giolam" && form.batdau)) {
-      if (nextForm.batdau && nextForm.giolam) {
-        const bd = dayjs(nextForm.batdau);
-        const kt = bd.add(Number(nextForm.giolam) * 60, "minute");
-        nextForm.ketthuc = kt;
-        // Xét lại ca qua đêm nếu cần
-        if (kt.isBefore(bd)) setIsOvernight(true);
-        else setIsOvernight(false);
-      }
+    // TÍNH GIỜ LÀM (không phụ thuộc state)
+    let duration = 0;
+    if (tempIsOvernight) {
+      // Ca qua đêm
+      const bd = nextForm.batdau;
+      const kt = nextForm.ketthuc;
+      duration = (24 * 60 - bd.hour() * 60 - bd.minute()) + (kt.hour() * 60 + kt.minute());
+    } else {
+      // Ca thường
+      duration = nextForm.ketthuc.diff(nextForm.batdau, "minute");
     }
-    if (field === "giolam" && !value) {
-      nextForm.ketthuc = null;
+    nextForm.giolam = duration > 0 ? Number((duration / 60).toFixed(2)) : "";
+  }
+
+  // Nếu chọn lại giờ làm, cập nhật giờ kết thúc nếu có giolam
+  if ((field === "batdau" && form.giolam) || (field === "giolam" && form.batdau)) {
+    if (nextForm.batdau && nextForm.giolam) {
+      const bd = dayjs(nextForm.batdau);
+      const kt = bd.add(Number(nextForm.giolam) * 60, "minute");
+      nextForm.ketthuc = kt;
+      if (kt.isBefore(bd)) setIsOvernight(true);
+      else setIsOvernight(false);
     }
-    setForm(nextForm);
-    setErrors({});
-  };
+  }
+  if (field === "giolam" && !value) {
+    nextForm.ketthuc = null;
+  }
+  setForm(nextForm);
+  setErrors({});
+};
 
   // Tính công chuẩn (xử lý ca qua đêm)
   function tinhCongChuan(bd: Dayjs, kt: Dayjs, nghi: number, overnight: boolean) {
