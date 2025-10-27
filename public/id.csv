@@ -88,6 +88,7 @@ KL-IN-4000132,Trần Thị Yến Nhi
 KL-IN-11000116,Nguyễn Trung Hậu
 KL-IN-11000054,Trịnh Thùy An
 KL-IN-11000057,Trịnh Thị Mai Phương
+KL-LC-0000034,Nguyễn Anh Phát
 KL-LC-0000166,Trịnh Gia Phước
 KL-IN-3000010,Trương Khải Kiệt
 KL-IN-3000077,Dương Yến Nhi
@@ -224,7 +225,6 @@ KL-LC-0000591,Đỗ Thị Thùy Mai
 KL-LC-0000623,Nguyễn Quốc Trọng
 KL-LC-0000209,Hồ Thị Phương Mai
 KL-LC-0000683,Trần Phạm Minh Thư
-KL-LC-0000003,Ngô Ngọc Phụng
 KL-LC-0000351,Danh Thị Mỹ Châu
 KL-LC-0000466,Trần Thị Như Ý
 KL-LC-0000619,Lê Ngọc Diễm
@@ -263,7 +263,6 @@ KL-LC-0000307,Hoàng Thị Ngọc Thảo
 KL-LC-0000381,Lê Thị Thu Uyên
 KL-LC-0000328,Hà Đình Dũng
 KL-LC-0000261,Nguyễn Văn Tuyến
-KL-LC-0000675,Đỗ Thị Diễm Nhi
 KL-LC-0000447,Nguyễn Thị Như Ý
 KL-LC-0000134,Nguyễn Tú Phương
 KL-LC-0000040,Trần Lê Khánh An
@@ -281,7 +280,6 @@ KL-LC-0000644,Hồ Cao Thương Huyền
 KL-LC-0000668,Võ Gia Hân
 KL-LC-0000669,Phan Nguyễn Ngọc Thủy
 KL-LC-0000697,Trần Hữu Thắng
-KL-LC-0000390,Lê Chí Thành
 KL-LC-0000634,Nguyễn Võ Mộng Ngọc
 KL-LC-0000173,Doãn Thị Oanh
 KL-LC-0000175,Nguyễn Thị Thanh Linh
@@ -556,3 +554,154 @@ KL-IN-0000021,Phùng Quyết Tiến
 KL-IN-0000024,Nguyễn Anh Huy
 KL-LC-0000775,Cao Hữu Tuấn Khải
 KL-IN-0000025,Nguyễn Viết Thức
+KL-IN-0000023,Nguyễn Mai Anh
+KL-IN-0000022,Huỳnh Trần Như Ý
+KL-LC-0000768,Phạm Thị Diễm
+KL-IN-0000029,Huỳnh Quốc Phi
+KL-IN-0000030,Nguyễn Mai Quốc Thịnh
+KL-IN-0000031,Cao Thanh Hà
+KL-IN-0000026,Nguyễn Hoàng Anh
+KL-IN-0000032,Đặng Nguyễn Thuý Hương
+KL-IN-0000034,Trương Quốc Đạt
+KL-IN-0000028,Lương Thị Ngọc Yến
+KL-IN-0000036,Hoàng Bích Hà
+KL-IN-0000037,Trần Hiếu Nghĩa
+KL-IN-0000033,Bùi Thiên Nam
+KL-IN-0000038,Nguyễn Ái Hạnh Dung
+KL-IN-0000039,Võ Thị Tuyết Nghi
+KL-IN-0000041,Huỳnh Đăng Khoa
+KL-IN-0000045,Lưu Trang Thư
+KL-IN-0000044,Nguyễn Thị Hồng Nhung
+KL-LC-0000765,Trương Ngọc Như
+KL-LC-0000777,Đinh Thị Minh Thư
+KL-LC-0000783,Phan Thị Thúy Hoài
+KL-LC-0000784,Quách Thanh Vy
+KL-LC-0000787,Nguyễn Tuyết Anh
+KL-LC-0000782,Huỳnh Gia Mẫn
+KL-LC-0000780,Tằng Minh Châu
+KL-LC-0000773,Phạm Thị Ánh
+KL-LC-0000776,Phùng Bác Nhã
+KL-IN-0000046,Tô Hoàng Luân
+KL-IN-0000047,Nguyễn Thị Kim Dung
+KL-IN-0000048,Lê Thị Phương Ngọc
+KL-IN-0000040,Trần Thị Ánh Ngọc
+KL-LC-0000788,Đoàn Quốc Duy
+KL-LC-0000789,Hoàng Thị Ngọc Hân
+KL-LC-0000790,Hoàng Anh Thư
+KL-LC-0000793,Cao Thị Thanh Trúc
+KL-LC-0000774,Nguyễn Thanh Liêm
+KL-LC-0000792,Nguyễn Ngọc Khánh Hà
+KL-LC-0000794,Trần Mỹ Nhung
+KL-IN-0000050,Bùi Quỳnh Như
+KL-IN-0000051,Nguyễn Lê Hồ Nhã Quỳnh
+KL-IN-0000052,Hoàng Lê Thu Hiền
+KL-IN-0000053,Nguyễn Ngọc Trâm Anh
+KL-IN-0000054,Võ Ngọc Thuận
+KL-IN-0000055,Trần Ngọc Thanh Vy
+KL-IN-0000058,Châu Hoàng Tâm Như
+KL-LC-0000795,Nguyễn Huỳnh Khả Ái
+KL-IN-0000060,Phan Thị Quỳnh Trúc
+KL-IN-0000061,Nguyễn Thanh Trường
+KL-IN-0000062,Nguyễn Bảo Thương
+KL-IN-0000065,Nguyễn Thị Minh Thư
+KL-IN-0000067,Trần Thị Như Quỳnh
+KL-LC-0000801,Nguyễn Việt Hải
+KL-LC-0000802,Trương Mai Thanh Trúc
+KL-LC-0000803,Nguyễn Ngọc Thảo
+KL-LC-0000797,Lý Quốc Nhượng
+KL-IN-0000064,Trần Quốc Thiên
+KL-IN-0000068,Nguyễn Hoàng Bảo Vân
+KL-IN-0000066,Bùi Văn Hải
+KL-LC-0000805,Trương Thị Lê
+KL-IN-0000069,Nguyễn Bỉnh Huy
+KL-IN-0000063,Nguyễn Ngọc Bảo Duy
+KL-IN-0000072,Nguyễn Vân Khánh
+KL-IN-0000076,Tống Thị Mỹ Tiên
+KL-IN-0000077,Đỗ Duy Tân
+KL-IN-0000078,Nguyễn Thị Huỳnh Nga
+KL-LC-0000799,Trần Thủy Tiên
+KL-LC-0000800,Phạm Thị Ngọc Quyên
+KL-LC-0000808,Đoàn Thị Thu Hiền
+KL-LC-0000809,Nguyễn Kim Tuyền
+KL-IN-0000080,Nguyễn Thị Xuân Mai
+KL-IN-0000081,Phạm Thùy Dương
+KL-LC-0000813,Nguyễn Khắc Thanh
+KL-IN-0000082,Nguyễn Minh Thư
+KL-IN-0000075,Hoàng Thị Ngọc Hân
+KL-IN-0000083,Trần Thị Hồng Diễm
+KL-LC-0000812,Huỳnh Thị Mỹ Thuận
+KL-IN-0000084,Nguyễn Thị Hà Giang
+KL-IN-0000085,Nguyễn Bảo Yến Nhi
+KL-IN-0000086,Nguyễn Lý Bảo Thư
+KL-IN-0000087,Trần Nguyễn Nhi
+KL-IN-0000089,Nguyễn Trần Thảo Vy
+KL-LC-0000818,Nguyễn Thị Sương
+KL-LC-0000821,Hoàng Thị Huyền Trang
+KL-IN-0000090,Phạm Ngọc Linh
+KL-IN-0000091,Bùi Nhật Dương Khánh
+KL-IN-0000092,Phạm Thiên Phú
+KL-IN-0000093,Nguyễn Tiến Hải Đăng
+KL-IN-0000094,Phan Trung Nghĩa
+KL-IN-0000095,Đỗ Ngọc Hải
+KL-IN-0000096,Đặng Ngọc Yến Nhi
+KL-IN-0000097,Đỗ Phan Xuân Quỳnh
+KL-LC-0000819,Trần Thị Kim Ngân
+KL-IN-0000070,Võ Quỳnh Như
+KL-IN-0000105,Hoàng Anh Thi
+KL-IN-0000106,Nguyễn Ngọc Hà My
+KL-IN-0000107,Nguyễn Thái Toàn
+KL-IN-0000108,Trương Minh Tiến
+KL-LC-0000804,Lê Công Hậu
+KL-IN-0000109,Nguyễn Trịnh Minh Nhật
+KL-LC-0000822,Nguyễn Ngọc Hải Yến
+KL-LC-0000823,Trần Thị Thùy Mỹ
+KL-LC-0000816,Hà Nguyễn Thanh Yến
+KL-IN-0000111,Võ Cao Trí
+KL-IN-0000112,Phạm Ngọc Thanh Nga
+KL-IN-0000113,Bạch Quỳnh Như
+KL-IN-0000114,Nguyễn Thị Nhật Thương
+KL-IN-0000099,Nguyễn Lê Khánh Linh
+KL-IN-0000102,Nguyễn Võ Kim Ngọc
+KL-IN-0000059,Phạm Huỳnh Đan Thư
+KL-IN-0000100,Bùi Lê Thi
+KL-IN-0000104,Nguyễn Lê Nhật Vy
+KL-IN-0000101,Nguyễn Duy Thắng
+KL-IN-0000110,Võ Thị Hoàng Anh
+KL-IN-0000103,Kim Thị Phương Anh
+KL-IN-0000115,Lê Thị Kim Thư
+KL-IN-0000116,Tô Nguyễn Thùy Trâm
+KL-IN-0000117,Trương Ngọc Thanh Mai
+KL-IN-0000118,Phạm Thị Mai Linh
+KL-LC-0000825,Lu Huỳnh Ngân
+KL-LC-0000826,Châu Chí Hữu
+KL-LC-0000262,Nguyễn Phương Đại
+KL-IN-0000079,Lương Gia Khang
+KL-IN-0000119,Nguyễn Thị Trà My
+KL-IN-0000120,Huỳnh Yến Trân
+KL-IN-0000121,Nguyễn Thị Hồng Thắm
+KL-IN-0000122,Võ Trần Khánh Quyên
+KL-IN-0000123,Hà Nguyễn Minh Thư
+KL-IN-0000124,Trần Anh Trung
+KL-IN-0000125,Phạm Đình Minh Trí
+KL-IN-0000126,Nguyễn Song Ngân
+KL-IN-0000127,Nguyễn Thị Minh Thư
+KL-IN-0000130,Huỳnh Thị Ngọc Linh
+KL-IN-0000131,Huỳnh Nguyễn Gia Thịnh
+KL-IN-0000129,Đoàn Yến Nhi
+KL-IN-0000128,Nguyễn Hữu Vũ
+KL-IN-0000132,Phạm Trần Trà My
+KL-LC-0000833,Huỳnh Văn Hào
+KL-IN-0000133,Phạm Phú Huy
+KL-LC-0000834,Nguyễn Vĩnh Hưng
+KL-IN-0000134,Đinh Thị Hải
+KL-IN-0000135,Hồ Văn An
+KL-IN-0000136,Nguyễn Phước Nhân
+KL-IN-0000137,Trần Hoàng Phương Anh
+KL-IN-0000138,Nguyễn Hoàng Kim Anh
+KL-IN-0000139,Nguyễn Duy Thống
+KL-IN-0000140,Trần Ngọc Châm
+KL-IN-0000141,Nguyễn Hồng Nhi
+KL-LC-0000827,Âu Dương Khoa
+KL-LC-0000835,Bùi Bá Phương
+KL-IN-0000142,Lê Ngọc Bảo Châu
+KL-IN-0000145,Lê Minh Quang
